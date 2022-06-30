@@ -32,7 +32,7 @@ const createInterns=async function(req,res){
         if (!isValidMobile(mobile)) {
             return res.status(400).send({ msg: "Enter Valid Mobile Number" })
         }
-        let checkMobile=await internModel .findOne({mobile:mobile})
+        let checkMobile=await internModel .findOne({$and:[{mobile:mobile,isDeleted:false}]})
         if(checkMobile) return res.status(400).send({msg :"Mobile Already Registered"})
 
         
