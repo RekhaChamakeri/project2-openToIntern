@@ -18,12 +18,10 @@ const createCollege = async function (req, res) {
             return res.status(400).send({ message: "Enter a valid College Name" })
         }
 
-        let Name = req.body.name.toLowerCase().trim()  //To Convert Name into lowerCase & trim spaces
-        let checkClg = await collegeModel.findOne({ name: name, isDeleted: false });
+        let Name = req.body.name.toLowerCase().trim() //To Convert Name into lowerCase & trim spaces
+        let checkClg = await collegeModel.findOne({ name: Name, isDeleted: false });
         if (checkClg) return res.status(400).send({ status: false, message: "College Name Already Exists" });
-        req.body.name = Name
-
-
+        req.body.name=Name
 
         if (!isValid(fullName)) {
             return res.status(400).send({ message: "Enter College Full Name" })
@@ -31,6 +29,9 @@ const createCollege = async function (req, res) {
         if (!isValidCollegeName(fullName)) {
             return res.status(400).send({ message: "Enter a valid College Full Name" })
         }
+        let FullName = fullName.trim()
+        req.body.fullName=FullName
+
 
         if (!isValid(logoLink)) {
             return res.status(400).send({ message: "Enter College Logo-Link" })
@@ -38,6 +39,9 @@ const createCollege = async function (req, res) {
         if (!isValidLink(logoLink)) {
             return res.status(400).send({ message: "Enter a valid url" })
         }
+        let LogoLink = logoLink.trim() 
+        req.body.logoLink=LogoLink
+
 
         let collegeData = await collegeModel.create(req.body)
         res.status(201).send({ status: true, data: collegeData })
@@ -55,15 +59,15 @@ module.exports.createCollege = createCollege
 const getCollegeDetails = async function (req, res) {
     try {
         let data = req.query
-        if (!Object.keys(data).length) return res.status(400).send({ status: false, msg: "Please Enter The College Name", });
+        if (Object.keys(data).length<1) return res.status(400).send({ status: false, msg: "Please Enter The College Name", });
         let clgName = data.collegeName.toLowerCase().trim()
 
         let getClg = await collegeModel.findOne({ name: clgName, isDeleted: false })
-        if (!getClg) return res.status(404).send({ status: false, msg: "No such college Name found", });
+        if (!getClg) return res.status(404).send({ status: false, msg: "No such college found", });
 
         let clgId = getClg._id
 
-        let getData = await internModel.find({ collegeId: clgId, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1, collegeId: 0 }).populate('collegeId')
+        let getData = await internModel.find({ collegeId: clgId, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
         if (!getData.length) return res.status(404).send({ status: false, msg: "No intern Apply for This College", });
 
         let Name = getClg.name
