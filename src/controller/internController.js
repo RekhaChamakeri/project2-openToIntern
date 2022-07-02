@@ -25,15 +25,17 @@ const createInterns = async function (req, res) {
         if (!isValidEmail(email)) {
             return res.status(400).send({ message: "Enter a valid email" })
         }
-        let checkEmail = await internModel.findOne({ email: email,isDeleted:false})
-        if (checkEmail) return res.status(400).send({ message: "Email Already Registered" })
-
+        
         if (!isValid(mobile)) {
             return res.status(400).send({ message: "Enter Mobile Number" })
         }
         if (!isValidMobile(mobile)) {
             return res.status(400).send({ message: ` ${mobile} is not a vaild Mobile Number` })
         }
+
+        let checkEmail = await internModel.findOne({ email: email,isDeleted:false})
+        if (checkEmail) return res.status(400).send({ message: "Email Already Registered" })
+
         let checkMobile = await internModel.findOne({ mobile: mobile, isDeleted:false})
         if (checkMobile) return res.status(400).send({ message: "Mobile Already Registered" })
 

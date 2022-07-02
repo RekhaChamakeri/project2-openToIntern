@@ -70,16 +70,15 @@ const getCollegeDetails = async function (req, res) {
         let getData = await internModel.find({ collegeId: clgId, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
         if (!getData.length) return res.status(404).send({ status: false, msg: "No intern Apply for This College", });
 
-        let Name = getClg.name
-        let FullName = getClg.fullName
-        let LogoLink = getClg.logoLink
 
         let collegeDetails = {
-            name: Name,
-            fullName: FullName,
-            logoLink: LogoLink,
+             Name : getClg.name,
+            FullName : getClg.fullName,
+            LogoLink : getClg.logoLink,
             interns: getData
+
         }
+
         res.status(200).send({ status: true, data: collegeDetails, })
 
     }
